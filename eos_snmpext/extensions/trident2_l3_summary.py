@@ -26,6 +26,8 @@ Map of platform_l3_stats MIB :
     +--- -R-- Gauge  alpmTableSize(15)      (integer)
 """
 
+POLLING_INTERVAL = 60
+
 def supported():
     return platform() == 'trident2'
 
