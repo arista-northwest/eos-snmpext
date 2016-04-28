@@ -39,6 +39,11 @@ __version__ = "1.3.0"
 __email__ = "nicolas.agius@lps-it.fr"
 __status__ = "Production"
 
+def merge_dicts(*args):
+    merged = args[0]
+    for dict_ in args[1:]:
+        merged.update(dict_)
+    return merged
 
 class Error(object):
     """
