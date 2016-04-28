@@ -5,10 +5,17 @@ EOS SNMP extensions
 Installation
 ------------
 
+Building the RPM (rpm tools required)
+
+```bash
 git clone https://github.com/arista-northwest/eos_snmpext.git
 cd eos_snmpext
 python setup.py bdist_rpm
+```
 
+Installation
+
+```bash
 scp dist/eos_snmpext-0.1.0-1.noarch.rpm <username>@<switch>:/tmp/
 
 ssh <username>@<switch>
@@ -28,12 +35,47 @@ configure
 no snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5
 snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 file:/var/tmp/snmpext
 end
+```
 
 Usage
 -----
 
-For testing
+For testing/debugging
 
+```bash
+[admin@switch ~]$ snmpext -d
+```
+
+Test a new extension:
+
+```bash
+[admin@switch ~]$ snmpext -d myextension
+```
 
 Extending
 ---------
+
+Simplest example, with polling interval set
+
+```python
+# -*- coding: utf-8 -*-
+
+POLLING_INTERVAL = 5
+
+def update(pp):
+    pp.add_str('255.1', 'Hello World!')
+
+```
+
+Make sure the 'snmpext' python package exists on the switch:
+
+```
+switch# mkdir flash:/snmpext
+switch# bash touch /mnt/flash/snmpext/__init__.py
+```
+
+From a workstation:
+
+```bash
+$ scp myextension.py user@switch:/mnt/flash/snmpext/myextension.py
+```
