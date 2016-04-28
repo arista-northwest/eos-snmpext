@@ -55,6 +55,7 @@ from eos_snmpext.util import cli, platform
 """
 
 ROOT_OID = 2
+POLLING_INTERVAL = 60
 
 def supported():
     return platform() == 'arad'
@@ -79,11 +80,11 @@ def update(pp):
         idx = tables.index(table) + 1
         oid = pp.encode(feature)
         #oid = re.sub('.$', '', oid)
-        pp.add_str("2.{}.1.{}".format(ROOT_OID, idx, oid), feature)
-        pp.add_gau("2.{}.2.{}".format(ROOT_OID, idx, oid), item['used'])
-        pp.add_gau("2.{}.3.{}".format(ROOT_OID, idx, oid), item['free'])
-        pp.add_gau("2.{}.4.{}".format(ROOT_OID, idx, oid), item['committed'])
-        pp.add_gau("2.{}.5.{}".format(ROOT_OID, idx, oid), item['maxLimit'])
-        pp.add_gau("2.{}.6.{}".format(ROOT_OID, idx, oid), item['highWatermark'])
+        pp.add_str("{}.{}.1.{}".format(ROOT_OID, idx, oid), feature)
+        pp.add_gau("{}.{}.2.{}".format(ROOT_OID, idx, oid), item['used'])
+        pp.add_gau("{}.{}.3.{}".format(ROOT_OID, idx, oid), item['free'])
+        pp.add_gau("{}.{}.4.{}".format(ROOT_OID, idx, oid), item['committed'])
+        pp.add_gau("{}.{}.5.{}".format(ROOT_OID, idx, oid), item['maxLimit'])
+        pp.add_gau("{}.{}.6.{}".format(ROOT_OID, idx, oid), item['highWatermark'])
 
     return ROOT_OID
