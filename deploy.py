@@ -14,14 +14,18 @@ package = os.path.basename(local)
 script = """
 no extension {0}
 delete extension:{0}
+""".format(package)
+print arcomm.execute('eapi://{}'.format(host), script.splitlines())
+
+script = """
 copy file:/tmp/{0} extension:
 extension {0}
 copy installed-extensions boot-extensions
 configure
-no snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 file:/var/tmp/snmpext
+no snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5
 snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 file:/var/tmp/snmpext
 end
 write
 """.format(package)
-#print script
+
 print arcomm.execute('eapi://{}'.format(host), script.splitlines())
