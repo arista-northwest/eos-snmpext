@@ -33,8 +33,6 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Environment :: Functional Testing Automation"
     ],
-    #py_modules=['eos_snmpext'],
-    #py_modules=["__main__"],
     packages = find_packages(),
     url = "http://aristanetworks.com",
     license = "Proprietary",
