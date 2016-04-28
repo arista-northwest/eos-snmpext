@@ -58,8 +58,8 @@ import sys
 sys.stdout = Unbuffered(sys.stdout)
 sys.stderr = Unbuffered(sys.stderr)
 
-def log(msg):
-    syslog.syslog(msg)
+def log(pri, msg):
+    syslog.syslog(pri, msg)
     if DEBUG:
         print msg
 
@@ -78,9 +78,9 @@ def _load_extensions(names):
                 continue
 
             if not is_supported(module):
-                log("%SNMPEXT-5-EXT_LOADED: Loaded '{}' snmp extension".format(name))
                 continue
 
+            log(syslog.LOG_INFO, "%SNMPEXT-5-EXT_LOADED: Loaded '{}' snmp extension".format(name))
             modules.append(module)
     return modules
 
@@ -93,13 +93,13 @@ def is_supported(extension):
     try:
         supported = extension.supported()
     except Exception as exc:
-        log(("%SNMPEXT-5-EXT_FAILED: Extension '{}' failed to "
-             "load: {}").format(extension.__name__, exc.message))
+        log(syslog.LOG_WARNING, ("%SNMPEXT-4-EXT_FAILED: Extension '{}' "
+             "failed to load: {}").format(extension.__name__, exc.message))
         supported = False
 
     if not supported:
-        log(("%SNMPEXT-5-EXT_UNSUPPORTED: Extension '{}' is not supported on "
-             "this platform").format(extension.__name__))
+        log(syslog.LOG_INFO, ("%SNMPEXT-5-EXT_UNSUPPORTED: Extension '{}' is "
+             "not supported on this platform").format(extension.__name__))
 
     return supported
 
@@ -118,6 +118,7 @@ def update(pp, extensions):
             last_interval = ext._LAST_INTERVAL
 
         if now - last_interval >= polling_interval:
+            log(syslog.LOG_INFO, "%SNMPEXT-6-UPDATING: Polling timer expired, updating {}".format(ext.__name__))
             ext.update(pp)
             ext._LAST_INTERVAL = now
 
@@ -143,21 +144,21 @@ def main():
             func = functools.partial(update, pp, extensions)
             pp.start(func, BASE_POLLING_INTERVAL)
         except KeyboardInterrupt:
-            log("%SNMPEXT-4-SHUTDOWN: {}".format("Exiting on user request"))
+            log(syslog.LOG_NOTICE, "%SNMPEXT-5-SHUTDOWN: {}".format("Exiting on user request"))
             sys.exit(0)
         except IOError as exc:
             if e.errno == errno.EPIPE:
                 message = "snmpd has closed the pipe"
-                log("%SNMPEXT-4-PIPE_CLOSED: {}".format(message))
+                log(syslog.LOG_ERR, "%SNMPEXT-3-PIPE_CLOSED: {}".format(message))
                 sys.exit(0)
             message = "updater thread has died: {}".format(exc.message)
         # except Exception as exc:
         #     message = "main thread has died: {}".format(str(exc))
 
-        log("%SNMPEXT-4-RETRYING: {}".format(message))
+        log(syslog.LOG_WARNING, "%SNMPEXT-4-RETRYING: {}".format(message))
         retry_counter -= 1
 
-    log("%SNMPEXT-3-RETRYS_EXHAUSTED: too many retrys, exiting")
+    log(syslog.LOG_ERR, "%SNMPEXT-3-RETRYS_EXHAUSTED: too many retrys, exiting")
     sys.exit(0)
 
 if __name__ == "__main__":
