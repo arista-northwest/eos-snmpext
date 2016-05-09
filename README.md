@@ -1,11 +1,14 @@
 EOS SNMP extensions
 ===================
 
-
 Installation
 ------------
 
-Building the RPM (rpm tools required)
+Download
+
+https://github.com/arista-northwest/eos_snmpext/releases/download/v0.1.0/eos_snmpext-0.1.0-1.noarch.rpm
+
+Or... build the RPM (rpm tools required)
 
 ```bash
 git clone https://github.com/arista-northwest/eos_snmpext.git
@@ -15,12 +18,12 @@ python setup.py bdist_rpm
 
 Installation
 
-```bash
+```
 scp dist/eos_snmpext-0.1.0-1.noarch.rpm <username>@<switch>:/tmp/
 
 ssh <username>@<switch>
 
-! clean up old extension
+! clean up the old version, if it exists
 no extension eos_snmpext-0.1.0-1.noarch.rpm
 delete extension:eos_snmpext-0.1.0-1.noarch.rpm
 
