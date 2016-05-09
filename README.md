@@ -6,7 +6,7 @@ Installation
 
 Download
 
-https://github.com/arista-northwest/eos_snmpext/releases/download/v0.1.0/eos_snmpext-0.1.0-1.noarch.rpm
+https://github.com/arista-northwest/eos_snmpext/releases
 
 Or... build the RPM (rpm tools required)
 
