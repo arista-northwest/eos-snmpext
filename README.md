@@ -40,10 +40,11 @@ snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 file:/var/tmp/snmpext
 end
 ```
 
-If this is a Trident2 switch:
+If this is a Trident2 switch...
 
-Map of trident2_l3_summary :
+Map of trident2_l3_summary:
 
+```
 +---Trident2L3Stats(1)
     |
     +--- -R-- Gauge  nextHopEntriesUsed(1)  (integer)
@@ -61,6 +62,7 @@ Map of trident2_l3_summary :
     +--- -R-- Gauge  alpmTableMode(13)      (integer)
     +--- -R-- Gauge  alpmTableUsed(14)      (integer)
     +--- -R-- Gauge  alpmTableSize(15)      (integer)
+```
 
 ```bash
 switch#show snmp mib walk .1.3.6.1.4.1.8072.1.3.1.5.1
