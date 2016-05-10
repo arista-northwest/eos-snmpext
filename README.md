@@ -89,7 +89,14 @@ Usage
 For testing/debugging
 
 ```bash
-[admin@switch ~]$ snmpext -d
+[admin@switch ~]$ snmpext
+PING
+PONG
+get
+.1.3.6.1.4.1.8072.1.3.1.5.255.0
+.1.3.6.1.4.1.8072.1.3.1.5.255.0
+STRING
+Hello World!
 ```
 
 Extending (optional)
