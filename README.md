@@ -40,6 +40,47 @@ snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 file:/var/tmp/snmpext
 end
 ```
 
+If this is a Trident2 switch:
+
+Map of trident2_l3_summary :
+
++---Trident2L3Stats(1)
+    |
+    +--- -R-- Gauge  nextHopEntriesUsed(1)  (integer)
+    +--- -R-- Gauge  nextHopEntriesSize(2)  (integer)
+    +--- -R-- Gauge  hostTableMode(3)       (integer)
+    +--- -R-- Gauge  hostTableUsed(4)       (integer)
+    +--- -R-- Gauge  hostTableSize(5)       (integer)
+    +--- -R-- Gauge  lpmTableMode(6)        (integer)
+    +--- -R-- Gauge  lpmTableUsed(7)        (integer)
+    +--- -R-- Gauge  lpmTableSize(8)        (integer)
+    +--- -R-- Gauge  ipv4Entries(9)         (integer)
+    +--- -R-- Gauge  ipv4Routes(10)         (integer)
+    +--- -R-- Gauge  ipv6Entries(11)        (integer)
+    +--- -R-- Gauge  ipv6Routes(12)         (integer)
+    +--- -R-- Gauge  alpmTableMode(13)      (integer)
+    +--- -R-- Gauge  alpmTableUsed(14)      (integer)
+    +--- -R-- Gauge  alpmTableSize(15)      (integer)
+
+```bash
+switch#show snmp mib walk .1.3.6.1.4.1.8072.1.3.1.5.1
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.1 = Gauge32: 43
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.2 = Gauge32: 49151
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.3 = Gauge32: 4
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.4 = Gauge32: 31
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.5 = Gauge32: 16383
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.6 = Gauge32: 4
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.7 = Gauge32: 12
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.8 = Gauge32: 393216
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.9 = Gauge32: 1
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.10 = Gauge32: 2
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.11 = Gauge32: 3
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.12 = Gauge32: 2
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.13 = Gauge32: 4
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.14 = Gauge32: 12
+NET-SNMP-EXTEND-MIB::netSnmpExtendMIB.5.1.15 = Gauge32: 393216
+```
+
 Usage
 -----
 
@@ -49,14 +90,8 @@ For testing/debugging
 [admin@switch ~]$ snmpext -d
 ```
 
-Test a new extension:
-
-```bash
-[admin@switch ~]$ snmpext -d myextension
-```
-
-Extending
----------
+Extending (optional)
+--------------------
 
 Simplest example, with polling interval set
 
@@ -66,7 +101,7 @@ Simplest example, with polling interval set
 POLLING_INTERVAL = 5
 
 def update(pp):
-    pp.add_str('255.1', 'Hello World!')
+    pp.add_str('255.0', 'Hello World!')
 
 ```
 
@@ -81,4 +116,13 @@ From a workstation:
 
 ```bash
 $ scp myextension.py user@switch:/mnt/flash/snmpext/myextension.py
+```
+
+Restart the SNMP agent:
+
+
+Test a new extension:
+
+```bash
+[admin@switch ~]$ snmpext -d myextension
 ```
