@@ -41,7 +41,8 @@ def is_platform_t2():
 
 @memoize
 def is_platform_tplus():
-    return not is_platform_t2()
+    response = cli("show platform trident l3 summary")
+    return True if "Total lpm table entries used:" in response else False
 
 @memoize
 def platform():
