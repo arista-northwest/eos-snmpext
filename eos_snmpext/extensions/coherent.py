@@ -684,6 +684,7 @@ def parse_intf_tr():
     # Tech.054    Laser fail  (show int trans - best we can do is notice tx power
     #                         being not correct or dramatically different from
     #                         configured value)
+    pass
 
 def parse_intf_phy_detail():
     # Tech.035    Pre-FEC Error Rate  (show int phy detail)
