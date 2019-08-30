@@ -82,7 +82,7 @@ def ipv6_octet_string(addr):
 
 def update(pp):
 
-    response = cli("show ipv6 route | json")
+    response = cli("show ipv6 route ::/0 | json")
     data = json.loads(response)
 
     for route in data["vrfs"]["default"]["routes"]:
@@ -91,8 +91,8 @@ def update(pp):
         octstr = ipv6_octet_string(prefix)
         
         for i in range(len(vias)):
-            interface = vias[i].get("interface") or "None"
-            nexthop = vias[i].get("nexthopAddr") or "None"
+            interface = vias[i].get("interface") or ""
+            nexthop = vias[i].get("nexthopAddr") or ""
             index = ".".join(map(lambda x: str(x), octstr + [plen, i]))
             
             resp_ = json.loads(cli("show snmp mib ifmib ifindex %s | json" % interface))
