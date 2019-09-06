@@ -21,7 +21,7 @@ def memoize(func):
     return _wrapper
 
 def cli(cmd):
-    cmd = "TERM=dumb FastCli -p15 -c '{}'".format(cmd)
+    cmd = "TERM=dumb Cli -p 15 -c '{}'".format(cmd)
     return subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT)
 
 def cli_ok(cmd):
