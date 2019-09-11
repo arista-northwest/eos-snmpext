@@ -14,7 +14,7 @@ import re
 import sys
 import syslog
 import time
-import yaml
+# import yaml
 import eos_snmpext.extensions
 from eos_snmpext.contrib import snmp_passpersist
 from eos_snmpext.util import memoize
@@ -26,7 +26,7 @@ BASE_OID = ".1.3.6.1.4.1.8072.1.3.1.5"
 DEBUG = False
 # search these paths for the 'snmpext' directory
 PATHS = ['/mnt/flash', '/persist/local']
-CONFIG = '/mnt/flash/snmpext-config'
+# CONFIG = '/mnt/flash/snmpext-config'
 # ====================
 
 PACKAGES = [eos_snmpext.extensions]
@@ -66,9 +66,9 @@ def log(pri, msg):
     if DEBUG:
         print msg
 
-def _load_config(path):
-    with open(path, "r") as fh:
-        return yaml.load(fh.read())
+# def _load_config(path):
+#     with open(path, "r") as fh:
+#         return yaml.load(fh.read())
 
 def _load_extensions(names):
     modules = []
@@ -138,19 +138,19 @@ def main():
 
     arg("extensions", nargs="*", default=[])
     arg("-d", "--debug", action="store_true", default=False, help="enable debugging")
-    arg("-c", "--config", default=CONFIG, help="specify config file")
+    # arg("-c", "--config", default=CONFIG, help="specify config file")
     args = parser.parse_args()
 
     syslog.openlog('snmpext', 0, syslog.LOG_LOCAL4)
 
     DEBUG = args.debug
 
-    config = {}
-    if os.path.exists(args.config):
-        config = _load_config(args.config)
+    # config = {}
+    # if os.path.exists(args.config):
+    #     config = _load_config(args.config)
 
-    if not args.extensions:
-        args.extensions = config.get("extensions") or []
+    # if not args.extensions:
+    #     args.extensions = config.get("extensions") or []
 
     extensions = _load_extensions(args.extensions)
     retry_counter = MAX_RETRY
