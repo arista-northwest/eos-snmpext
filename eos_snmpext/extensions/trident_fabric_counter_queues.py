@@ -4,7 +4,7 @@ from six import iteritems
 import json
 import re
 
-from eos_snmpext.util import cli, platform
+from eos_snmpext.util import cli, platform, version
 
 """
 |  +--fabricQueueTable(1)
@@ -56,8 +56,14 @@ field_map = {
     "droppedPackets": 7
 }
 
-ROOT_OID = "10.1.1"
-POLLING_INTERVAL = 60
+ROOT_OID = 10
+POLLING_INTERVAL = 30
+
+def supported():
+    ver = version()
+    plat = platform()
+    
+    return plat == "trident2" and ver["modelName"].startswith("DCS-7260CX")
 
 def update(pp):
     # with open("trident_fabric_counter_queues.json") as fh:
@@ -80,7 +86,7 @@ def update(pp):
                 dqueue_id = queue_map[dqueue]
                 field_id = field_map
 
-                oid = "%s.%d.%s.%s" % (ROOT_OID, module_id, port_id, dqueue_id)
+                oid = "%d.1.1.%d.%s.%s" % (ROOT_OID, module_id, port_id, dqueue_id)
 
                 #print("%s %s %s %d.%s.%s" % (fabric, port, dqueue, module_id, port_id, dqueue_id))
                 

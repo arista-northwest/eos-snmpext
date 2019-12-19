@@ -56,20 +56,20 @@ from eos_snmpext.util import cli, platform
    |  |     +-- -R-- String    ipv6RouteNextHop(5)
    |  |     |        Textual Convention: Ipv6Address
    |  |     |        Size: 16
-   |  |     +-- -R-- EnumVal   ipv6RouteType(6)
-   |  |     |        Values: other(1), discard(2), local(3), remote(4)
-   |  |     +-- -R-- EnumVal   ipv6RouteProtocol(7)
-   |  |     |        Values: other(1), local(2), netmgmt(3), ndisc(4), rip(5), ospf(6), bgp(7), idrp(8), igrp(9)
-   |  |     +-- -R-- Integer32 ipv6RoutePolicy(8)
-   |  |     +-- -R-- Unsigned  ipv6RouteAge(9)
-   |  |     +-- -R-- Unsigned  ipv6RouteNextHopRDI(10)
-   |  |     +-- -R-- Unsigned  ipv6RouteMetric(11)
-   |  |     +-- -R-- Unsigned  ipv6RouteWeight(12)
-   |  |     +-- -R-- ObjID     ipv6RouteInfo(13)
-   |  |     |        Textual Convention: RowPointer
-   |  |     +-- -RW- EnumVal   ipv6RouteValid(14)
-   |  |              Textual Convention: TruthValue
-   |  |              Values: true(1), false(2)
+#    |  |     +-- -R-- EnumVal   ipv6RouteType(6)
+#    |  |     |        Values: other(1), discard(2), local(3), remote(4)
+#    |  |     +-- -R-- EnumVal   ipv6RouteProtocol(7)
+#    |  |     |        Values: other(1), local(2), netmgmt(3), ndisc(4), rip(5), ospf(6), bgp(7), idrp(8), igrp(9)
+#    |  |     +-- -R-- Integer32 ipv6RoutePolicy(8)
+#    |  |     +-- -R-- Unsigned  ipv6RouteAge(9)
+#    |  |     +-- -R-- Unsigned  ipv6RouteNextHopRDI(10)
+#    |  |     +-- -R-- Unsigned  ipv6RouteMetric(11)
+#    |  |     +-- -R-- Unsigned  ipv6RouteWeight(12)
+#    |  |     +-- -R-- ObjID     ipv6RouteInfo(13)
+#    |  |     |        Textual Convention: RowPointer
+#    |  |     +-- -RW- EnumVal   ipv6RouteValid(14)
+#    |  |              Textual Convention: TruthValue
+#    |  |              Values: true(1), false(2)
 '''
 
 POLLING_INTERVAL = 60

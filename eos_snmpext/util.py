@@ -1,6 +1,7 @@
 
 import functools
 import hashlib
+import json
 import re
 import subprocess
 
@@ -56,3 +57,8 @@ def platform():
     for name, func in platforms.iteritems():
         if func():
             return name
+
+@memoize
+def version():
+    response = cli("show version | json")
+    json.loads(response)
