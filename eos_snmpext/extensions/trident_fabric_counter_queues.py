@@ -25,6 +25,16 @@ from eos_snmpext.util import cli, platform, version
 |  |     +-- INTEGER fabricQueueDroppedBytes(6)
 |  |     |
 |  |     +-- INTEGER fabricDroppedPackets(7)
+|  |
+|  +--fabricQueueSummary(2)
+|  |  |
+|  |  +--fabricQueueEnqueuedPackets(1)
+|  |  |
+|  |  +--fabricQueueEnqueuedBytes(2)
+|  |  |
+|  |  +--fabricQueueDroppedBytes(3)
+|  |  |
+|  |  +--fabricQueueDroppedPackets(4)
 """
 
 # Map queue names to an OID
@@ -69,6 +79,8 @@ def update(pp):
     response = cli("show platform trident fabric counter queue detail | json")
     data = json.loads(response)
     
+    summary = {k: 0 for (k, v) in iteritems(field_map)}
+
     for fabric, ports_ in iteritems(data["fabricChips"]):
         # print(fabric)
         ports = ports_["ports"]
@@ -82,7 +94,7 @@ def update(pp):
 
             for dqueue, fields in iteritems(queues["destinationQueues"]):
                 dqueue_id = queue_map[dqueue]
-                field_id = field_map
+                #field_id = field_map
 
                 oid = "%d.1.1.%d.%s.%s" % (ROOT_OID, module_id, port_id, dqueue_id)
 
@@ -94,4 +106,10 @@ def update(pp):
                 
                 for field, value in iteritems(fields):
                     field_id = field_map[field]
-                    pp.add_int("%s.%d" % (oid, field_id), value) 
+                    summary[field] += value
+                    pp.add_int("%s.%d" % (oid, field_id), value)
+
+    pp.add_int("%d.2.1" % ROOT_OID, summary["enqueuedPackets"])
+    pp.add_int("%d.2.2" % ROOT_OID, summary["enqueuedBytes"])
+    pp.add_int("%d.2.3" % ROOT_OID, summary["droppedBytes"])
+    pp.add_int("%d.2.4" % ROOT_OID, summary["droppedPackets"])
