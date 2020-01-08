@@ -46,9 +46,8 @@ Logging.logD(id="SYS_SNMPEXT_EXTENSION_NOTSUPPORTED",
              explanation="[ ]",
              recommendedAction=Logging.NO_ACTION_REQUIRED)
 
-
 Logging.logD(id="SYS_SNMPEXT_UPDATING",
-             severity=Logging.logInfo,
+             severity=Logging.logDebug,
              format="%s",
              explanation="[ ]",
              recommendedAction=Logging.NO_ACTION_REQUIRED)
