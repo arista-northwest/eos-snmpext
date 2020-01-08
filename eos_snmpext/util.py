@@ -4,6 +4,7 @@ import hashlib
 import json
 import re
 import subprocess
+import sys
 
 def md5sum(*args):
     hash = hashlib.md5()
@@ -61,4 +62,4 @@ def platform():
 @memoize
 def version():
     response = cli("show version | json")
-    json.loads(response)
+    return json.loads(response)
