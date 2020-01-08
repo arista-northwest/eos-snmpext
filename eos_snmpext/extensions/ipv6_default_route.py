@@ -95,7 +95,10 @@ def update(pp):
             nexthop = vias[i].get("nexthopAddr") or ""
             index = ".".join(map(lambda x: str(x), octstr + [plen, i]))
             
-            resp_ = json.loads(cli("show snmp mib ifmib ifindex %s | json" % interface))
+            response = cli("show snmp mib ifmib ifindex %s | json" % interface)
+            
+            #print(">>" + str(response) + "<<")
+            resp_ = json.loads(response)
             ifindex = resp_["ifIndex"][interface]
             pp.add_str("%d.%s.1" % (ROOT_OID, index), prefix) # ipv6RouteDest (string)
             pp.add_int("%d.%s.2" % (ROOT_OID, index), int(plen)) # ipv6RoutePfxLength (int)

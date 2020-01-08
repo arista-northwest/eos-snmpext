@@ -27,8 +27,8 @@ ssh <username>@<switch>
 no extension eos_snmpext-0.1.0-1.noarch.rpm
 delete extension:eos_snmpext-0.1.0-1.noarch.rpm
 
-copy file:/tmp/eos_snmpext-0.1.0-1.noarch.rpm extension:
-extension eos_snmpext-0.1.0-1.noarch.rpm
+copy file:/tmp/eos_snmpext-0.1.11-1.noarch.rpm extension:
+extension eos_snmpext-0.1.11-1.noarch.rpm
 
 ! make persistent
 copy installed-extensions boot-extensions
