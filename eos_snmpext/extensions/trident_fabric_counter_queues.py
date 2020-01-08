@@ -18,23 +18,23 @@ from eos_snmpext.util import cli, platform, version
 |  |     |
 |  |     +-- String fabricQueueTxQ(3)
 |  |     |
-|  |     +-- INTEGER fabricEnqueuedPackets(4)
+|  |     +-- Counter64 fabricEnqueuedPackets(4)
 |  |     |
-|  |     +-- INTEGER fabricEnqueuedBytes(5)
+|  |     +-- Counter64 fabricEnqueuedBytes(5)
 |  |     |
-|  |     +-- INTEGER fabricQueueDroppedBytes(6)
+|  |     +-- Counter64 fabricQueueDroppedBytes(6)
 |  |     |
-|  |     +-- INTEGER fabricDroppedPackets(7)
+|  |     +-- Counter64 fabricDroppedPackets(7)
 |  |
 |  +--fabricQueueSummary(2)
 |  |  |
-|  |  +--fabricQueueEnqueuedPackets(1)
+|  |  +-- Counter64 fabricQueueEnqueuedPackets(1)
 |  |  |
-|  |  +--fabricQueueEnqueuedBytes(2)
+|  |  +-- Counter64 fabricQueueEnqueuedBytes(2)
 |  |  |
-|  |  +--fabricQueueDroppedBytes(3)
+|  |  +-- Counter64 fabricQueueDroppedBytes(3)
 |  |  |
-|  |  +--fabricQueueDroppedPackets(4)
+|  |  +-- Counter64 fabricQueueDroppedPackets(4)
 """
 
 # Map queue names to an OID
