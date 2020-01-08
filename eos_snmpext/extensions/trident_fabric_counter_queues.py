@@ -61,9 +61,7 @@ POLLING_INTERVAL = 30
 
 def supported():
     ver = version()
-    plat = platform()
-    
-    return plat == "trident2" and ver["modelName"].startswith("DCS-7260CX")
+    return ver["modelName"].startswith("DCS-7260CX")
 
 def update(pp):
     # with open("trident_fabric_counter_queues.json") as fh:
