@@ -19,16 +19,16 @@ python setup.py bdist_rpm
 Installation
 
 ```
-scp dist/eos_snmpext-0.1.12-1.noarch.rpm <username>@<switch>:/tmp/
+scp dist/eos_snmpext-0.1.13-1.noarch.rpm <username>@<switch>:/tmp/
 
 ssh <username>@<switch>
 
 ! clean up the old version, if it exists
-no extension eos_snmpext-0.1.12-1.noarch.rpm
-delete extension:eos_snmpext-0.1.12-1.noarch.rpm
+no extension eos_snmpext-0.1.13-1.noarch.rpm
+delete extension:eos_snmpext-0.1.13-1.noarch.rpm
 
-copy file:/tmp/eos_snmpext-0.1.12-1.noarch.rpm extension:
-extension eos_snmpext-0.1.12-1.noarch.rpm
+copy file:/tmp/eos_snmpext-0.1.13-1.noarch.rpm extension:
+extension eos_snmpext-0.1.13-1.noarch.rpm
 
 ! make persistent
 copy installed-extensions boot-extensions

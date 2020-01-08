@@ -107,9 +107,9 @@ def update(pp):
                 for field, value in iteritems(fields):
                     field_id = field_map[field]
                     summary[field] += value
-                    pp.add_int("%s.%d" % (oid, field_id), value)
+                    pp.add_cnt_64bit("%s.%d" % (oid, field_id), value)
 
-    pp.add_int("%d.2.1" % ROOT_OID, summary["enqueuedPackets"])
-    pp.add_int("%d.2.2" % ROOT_OID, summary["enqueuedBytes"])
-    pp.add_int("%d.2.3" % ROOT_OID, summary["droppedBytes"])
-    pp.add_int("%d.2.4" % ROOT_OID, summary["droppedPackets"])
+    pp.add_cnt_64bit("%d.2.1" % ROOT_OID, summary["enqueuedPackets"])
+    pp.add_cnt_64bit("%d.2.2" % ROOT_OID, summary["enqueuedBytes"])
+    pp.add_cnt_64bit("%d.2.3" % ROOT_OID, summary["droppedBytes"])
+    pp.add_cnt_64bit("%d.2.4" % ROOT_OID, summary["droppedPackets"])
