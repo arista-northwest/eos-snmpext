@@ -176,6 +176,7 @@ def main():
     retry_counter = MAX_RETRY
 
     while retry_counter > 0:
+        message = ""
         try:
             pp = snmp_passpersist.PassPersist(BASE_OID)
             func = functools.partial(update, pp, extensions)
