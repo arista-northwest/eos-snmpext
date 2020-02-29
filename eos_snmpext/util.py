@@ -6,10 +6,12 @@ import re
 import subprocess
 import sys
 
+from six import iteritems
+
 def md5sum(*args):
     hash = hashlib.md5()
     for arg in args:
-        hash.update(str(arg))
+        hash.update(str(arg).encode("utf-8"))
     return hash.hexdigest()
 
 def memoize(func):
@@ -37,6 +39,10 @@ def is_platform_arad():
 is_arad = is_platform_arad
 
 @memoize
+def is_platform_sand():
+    return cli_ok("show platform sand capabilities")
+
+@memoize
 def is_platform_t2():
     response = cli("show platform trident l3 summary")
     return True if "LPM table mode:" in response else False
@@ -55,7 +61,7 @@ def platform():
         'arad': is_platform_arad
     }
 
-    for name, func in platforms.iteritems():
+    for name, func in iteritems(platforms):
         if func():
             return name
 
