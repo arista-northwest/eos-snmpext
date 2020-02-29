@@ -18,6 +18,7 @@ from eos_snmpext.contrib import snmp_passpersist
 import Logging
 import Tac
 
+
 # ====================
 BASE_POLLING_INTERVAL = 1
 MAX_RETRY = 10
