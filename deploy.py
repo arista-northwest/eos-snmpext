@@ -11,6 +11,7 @@ target = "snmpext.rpm"
 _, local, host = sys.argv[:3]
 
 sess = eapi.session(host)
+target = os.path.basename(local)
 
 sh.scp(local, "admin@{}:/tmp/{}".format(host, target))
 
@@ -21,7 +22,6 @@ no snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5
 end
 no extension {0}
 delete extension:{0}
-delete flash
 """.format(target)
 print(sess.send(script.splitlines()))
 
@@ -31,6 +31,7 @@ copy installed-extensions boot-extensions
 configure
 snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 file:/var/tmp/snmpext
 end
+delete file:/tmp/{0}
 write
 """.format(target)
 print(sess.send(script.splitlines()))
