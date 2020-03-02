@@ -6,7 +6,7 @@
 import json
 import re
 from six import iteritems
-from eos_snmpext.util import cli, platform, memoize, is_platform_sand
+from eos_snmpext.util import cli, is_platform_sand
 
 """
 +--- cpuCountersQueue (11)
@@ -113,7 +113,10 @@ def update(pp):
         port_id = int(re.match(r"CpuTm(\d+)", port).group(1))
 
         for qtype, queues in iteritems(qtypes):
-            dest_type_id = QUEUE_TYPES_MAP[qtype]
+            dest_type_id = QUEUE_TYPES_MAP.get(qtype)
+
+            if not dest_type_id:
+                continue
 
             for queue_id, counters in iteritems(queues["queues"]):
                 queue_id = int(queue_id)
