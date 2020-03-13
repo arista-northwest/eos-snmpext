@@ -1,6 +1,6 @@
 #!/bin/sh
 
 DIR=/var/tmp
-if [ -f "$DIR/snmpext" ]; then
+if [ -L "$DIR/snmpext" ]; then
     rm $DIR/snmpext
 fi
