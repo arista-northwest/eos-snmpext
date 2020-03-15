@@ -18,7 +18,6 @@ from eos_snmpext.contrib import snmp_passpersist
 import Logging
 import Tac
 
-
 # ====================
 BASE_POLLING_INTERVAL = 1
 MAX_RETRY = 10
@@ -132,7 +131,6 @@ def _load_extensions(names):
     return modules
 
 def is_supported(extension):
-    supported = True
 
     if not hasattr(extension, 'supported'):
         return True
@@ -149,7 +147,6 @@ def update(pp, extensions):
     last_interval = 0
 
     for ext in extensions:
-        name = ext.__name__
         now = time.time()
 
         if hasattr(ext, 'POLLING_INTERVAL'):
