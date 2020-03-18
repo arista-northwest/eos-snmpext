@@ -113,10 +113,11 @@ Simplest example, with polling interval set
 ```python
 # -*- coding: utf-8 -*-
 
-POLLING_INTERVAL = 5
+ROOT_OID = 255
+POLLING_INTERVAL = 10
 
 def update(pp):
-    pp.add_str('255.0', 'Hello World!')
+    pp.add_str("%d.0" % ROOT_OID, 'Hello World!')
 
 ```
 
@@ -139,5 +140,5 @@ Restart the SNMP agent:
 Test a new extension:
 
 ```bash
-[admin@switch ~]$ snmpext -d myextension
+[admin@switch ~]$ snmpext myextension
 ```
