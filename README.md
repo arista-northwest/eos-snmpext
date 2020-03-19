@@ -88,12 +88,8 @@ Usage
 
 For testing/debugging
 
-Note: extensions need to be explicitly enabled in the config file (/mnt/flash/snmpext-config)
 
 ```bash
-[admin@switch ~]$ cat /mnt/flash/snmpext-config
-extensions:
-    - hello
 
 [admin@switch ~]$ snmpext
 PING
