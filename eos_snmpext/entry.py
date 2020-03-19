@@ -13,10 +13,9 @@ import sys
 import time
 
 import eos_snmpext.extensions
-from eos_snmpext.contrib import snmp_passpersist
-
 import Logging
 import Tac
+from eos_snmpext.contrib import snmp_passpersist
 
 # ====================
 BASE_POLLING_INTERVAL = 1
@@ -104,7 +103,6 @@ class Unbuffered(object):
    def __getattr__(self, attr):
        return getattr(self.stream, attr)
 
-import sys
 sys.stdout = Unbuffered(sys.stdout)
 sys.stderr = Unbuffered(sys.stderr)
 
