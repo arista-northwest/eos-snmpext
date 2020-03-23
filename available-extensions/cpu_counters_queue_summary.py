@@ -33,19 +33,17 @@ from eos_snmpext.util import cli, is_platform_sand
     +--- ingressVoqsSummaryTable(2)
     |   |
     |   +--- ingressVoqsSummaryEntry(1)
-    |       | Index: CoppClassPriority
+    |       | Index: CoppClassId
     |       |
     |       +-- String coppClass(1)
     |       |
-    |       +-- Integer coppClassPriority(2)
+    |       +-- Counter64 enqueuedPackets(2)
     |       |
-    |       +-- Counter64 enqueuedPackets(3)
+    |       +-- Counter64 enqueuedBytes(3)
     |       |
-    |       +-- Counter64 enqueuedBytes(4)
+    |       +-- Counter64 droppedPackets(4)
     |       |
-    |       +-- Counter64 droppedPackets(5)
-    |       |
-    |       +-- Counter64 droppedBytes(6)
+    |       +-- Counter64 droppedBytes(5)
 
 """
 
@@ -111,35 +109,39 @@ def update(pp):
     classes = data["ingressVoqs"]["sources"]["all"]["cpuClasses"]
 
     for port, qtypes in iteritems(ports):
-        
+
         port_id = int(re.match(r"CpuTm(\d+)", port).group(1))
 
         for qtype, queues in iteritems(qtypes):
             dest_type_id = QUEUE_TYPES_MAP.get(qtype)
 
-            if not dest_type_id:
+            if dest_type_id is None:
                 continue
 
             for queue_id, counters in iteritems(queues["queues"]):
                 queue_id = int(queue_id)
-                oid = "%d.1.1.%d.%d.%d" % (ROOT_OID, port_id, dest_type_id, queue_id)
+                base_oid = "%d.1.1" % ROOT_OID
+                idx = "%d.%d.%d" % (port_id, dest_type_id, queue_id)
 
-                pp.add_str("%s.1" % oid, port)
-                pp.add_cnt_64bit("%s.2" % oid, counters["enqueuedPackets"])
-                pp.add_cnt_64bit("%s.3" % oid, counters["enqueuedBytes"])
-                pp.add_cnt_64bit("%s.4" % oid, counters["droppedPackets"])
-                pp.add_cnt_64bit("%s.5" % oid, counters["droppedBytes"])
+                pp.add_str("%s.1.%s" % (base_oid, idx), port)
+                pp.add_str("%s.2.%s" % (base_oid, idx), qtype)
+                pp.add_int("%s.3.%s" % (base_oid, idx), queue_id)
+                pp.add_cnt_64bit("%s.4.%s" % (base_oid, idx), counters["enqueuedPackets"])
+                pp.add_cnt_64bit("%s.5.%s" % (base_oid, idx), counters["enqueuedBytes"])
+                pp.add_cnt_64bit("%s.6.%s" % (base_oid, idx), counters["droppedPackets"])
+                pp.add_cnt_64bit("%s.7.%s" % (base_oid, idx), counters["droppedBytes"])
         
     for copp_class, counters in iteritems(classes):
         counters = counters["ports"][""]
         copp_class_id = COPP_CLASS_MAP[copp_class]
-        oid = "%d.2.1.%d" % (ROOT_OID, copp_class_id)
 
-        pp.add_str("%s.1" % oid, copp_class)
-        pp.add_cnt_64bit("%s.2" % oid, counters["enqueuedPackets"])
-        pp.add_cnt_64bit("%s.3" % oid, counters["enqueuedBytes"])
-        pp.add_cnt_64bit("%s.4" % oid, counters["droppedPackets"])
-        pp.add_cnt_64bit("%s.5" % oid, counters["droppedBytes"])
+        base_oid = "%d.2.1" % ROOT_OID
+
+        pp.add_str("%s.1.%s" % (base_oid, copp_class_id), copp_class)
+        pp.add_cnt_64bit("%s.2.%s" % (base_oid, copp_class_id), counters["enqueuedPackets"])
+        pp.add_cnt_64bit("%s.3.%s" % (base_oid, copp_class_id), counters["enqueuedBytes"])
+        pp.add_cnt_64bit("%s.4.%s" % (base_oid, copp_class_id), counters["droppedPackets"])
+        pp.add_cnt_64bit("%s.5.%s" % (base_oid, copp_class_id), counters["droppedBytes"])
 
 if __name__ == "__main__":
     update(None)
