@@ -39,6 +39,7 @@ setup(
     entry_points = {
         'console_scripts': [
             'snmpext = eos_snmpext.entry:main',
+            'snmpext_mock = eos_snmpext.entry:main_mock'
         ]
     },
     options = {

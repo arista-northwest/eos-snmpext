@@ -1,8 +1,13 @@
 
+# -*- coding: utf-8 -*-
+# Copyright (c) 2020 Arista Networks, Inc.  All rights reserved.
+# Arista Networks, Inc. Confidential and Proprietary.
+
 import functools
 import hashlib
 import json
 import re
+import os
 import subprocess
 import sys
 
@@ -69,3 +74,7 @@ def platform():
 def version():
     response = cli("show version | json")
     return json.loads(response)
+
+def is_mock_mode():
+    m = os.environ.get("SNMPEXT_MOCK_MODE", None)
+    return True if os.environ.get("SNMPEXT_MOCK_MODE", None) else False

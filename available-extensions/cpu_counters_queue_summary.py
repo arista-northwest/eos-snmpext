@@ -5,8 +5,9 @@
 
 import json
 import re
+import os
 from six import iteritems
-from eos_snmpext.util import cli, is_platform_sand
+from eos_snmpext.util import cli, is_platform_sand, is_mock_mode
 
 """
 +--- cpuCountersQueue (11)
@@ -46,6 +47,8 @@ from eos_snmpext.util import cli, is_platform_sand
     |       +-- Counter64 droppedBytes(5)
 
 """
+
+MOCK_DATA = '{"egressQueues":{"sources":{"all":{"cpuPorts":{"CpuTm3":{"mcastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"ucastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}}},"CpuTm2":{"mcastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"ucastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}}},"CpuTm1":{"mcastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"ucastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}}},"CpuTm0":{"mcastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"ucastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":386343,"enqueuedBytes":48264952,"droppedPackets":0}}}},"CpuTm5":{"mcastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"ucastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}}},"CpuTm4":{"mcastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"ucastQueues":{"queues":{"0":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}}}}}}},"ingressVoqs":{"sources":{"all":{"cpuClasses":{"CoppSystemMirroring":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":6758,"enqueuedBytes":1491318,"droppedPackets":0}}},"CoppSystemMvrp":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemAclLog":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemDot1xMba":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemCfmSnoop":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemLinkLocal":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":89,"enqueuedBytes":8010,"droppedPackets":0}}},"CoppSystemL3LpmOverflow":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":270,"enqueuedBytes":23100,"droppedPackets":0}}},"CoppSystemDefault":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemVxlanEncap":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemLdp":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemSflow":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":34,"enqueuedBytes":4009,"droppedPackets":0}}},"CoppSystemPtpSnoop":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemRsvp":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemL3Ttl1IpOptions":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":229,"enqueuedBytes":31386,"droppedPackets":0}}},"CoppSystemIpMcast":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemMlag":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemL2Ucast":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":193,"enqueuedBytes":12380,"droppedPackets":0}}},"CoppSystemL3Ttl1IpOptUcast":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":70196,"enqueuedBytes":6878668,"droppedPackets":0}}},"CoppSystemMplsTtl":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemMplsLabelMiss":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemCvx":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemOspfIsis":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemL2Bcast":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":1083,"enqueuedBytes":69312,"droppedPackets":0}}},"CoppSystemLacp":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":50277,"enqueuedBytes":6435456,"droppedPackets":0}}},"CoppSystemIpBcast":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemIpMcastMiss":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemMplsArpSuppress":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemBgp":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":68114,"enqueuedBytes":5312892,"droppedPackets":0}}},"CoppSystemVxlanVtepLearn":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemOspfIsisUcast":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemMulticastSnoop":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemL3DstMiss":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemPtp":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemLldp":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":63600,"enqueuedBytes":12561111,"droppedPackets":0}}},"CoppSystemIgmp":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemEgressTrap":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemCvxHeartbeat":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemArpInspect":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemCfm":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemIpUcast":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemBfd":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":0,"enqueuedBytes":0,"droppedPackets":0}}},"CoppSystemBpdu":{"ports":{"":{"droppedBytes":0,"enqueuedPackets":125500,"enqueuedBytes":15436500,"droppedPackets":0}}}}}}}}'
 
 ROOT_OID = 11
 POLLING_INTERVAL = 10
@@ -101,15 +104,23 @@ QUEUE_TYPES_MAP = {
 }
 
 def supported():
+    if is_mock_mode():
+        return True
+    
     return is_platform_sand()
 
 def update(pp):
-    data = json.loads(cli("show cpu counters queue summary | json"))
+    
+    data = None
+    if is_mock_mode():
+        data = json.loads(MOCK_DATA)
+    else:
+        data = json.loads(cli("show cpu counters queue summary | json"))
+
     ports = data["egressQueues"]["sources"]["all"]["cpuPorts"]
     classes = data["ingressVoqs"]["sources"]["all"]["cpuClasses"]
 
     for port, qtypes in iteritems(ports):
-
         port_id = int(re.match(r"CpuTm(\d+)", port).group(1))
 
         for qtype, queues in iteritems(qtypes):
@@ -143,5 +154,3 @@ def update(pp):
         pp.add_cnt_64bit("%s.4.%s" % (base_oid, copp_class_id), counters["droppedPackets"])
         pp.add_cnt_64bit("%s.5.%s" % (base_oid, copp_class_id), counters["droppedBytes"])
 
-if __name__ == "__main__":
-    update(None)

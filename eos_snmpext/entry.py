@@ -1,8 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
 # Copyright (c) 2016 Arista Networks, Inc.  All rights reserved.
 # Arista Networks, Inc. Confidential and Proprietary.
+
+from __future__ import absolute_import
+from __future__ import division
+#from __future__ import print_function
 
 import argparse
 import errno
@@ -12,9 +15,14 @@ import pkgutil
 import sys
 import time
 
+
+try:
+    import Logging
+    import Tac
+except ImportError:
+    from eos_snmpext.mock import Logging, Tac
+
 import eos_snmpext.extensions
-import Logging
-import Tac
 from eos_snmpext.contrib import snmp_passpersist
 
 # ====================
@@ -158,16 +166,16 @@ def update(pp, extensions):
             ext.update(pp)
             ext._LAST_INTERVAL = now
 
-def main():
-
-    parser = argparse.ArgumentParser(prog="arcomm")
+def _parse_args():
+    parser = argparse.ArgumentParser(prog="snmpext")
     arg = parser.add_argument
 
     arg("extensions", nargs="*", default=[])
-    
-    args = parser.parse_args()
+    arg("-m", "--mock", action="store_true", help="enable mock mode. uses fake data")
+    return parser.parse_args()
 
-    extensions = _load_extensions(args.extensions)
+def run(extensions):
+    extensions = _load_extensions(extensions)
     retry_counter = MAX_RETRY
 
     while retry_counter > 0:
@@ -179,15 +187,15 @@ def main():
         except KeyboardInterrupt:
 
             Logging.log(SYS_SNMPEXT_SHUTDOWN, "Exiting on user request")
-            sys.exit(0)
+            return 0
         except IOError as exc:
             if exc.errno == errno.EPIPE:
                 message = "snmpd has closed the pipe"
                 Logging.log(SYS_SNMPEXT_PIPE_CLOSED, message)
-                sys.exit(0)
+                return 0
         except EOFError as exc:
             Logging.log(SYS_SNMPEXT_SHUTDOWN, "EOF. shutting down...")
-            sys.exit(0)
+            return 0
 
         Logging.log(SYS_SNMPEXT_RETRYING, message)
 
@@ -195,9 +203,25 @@ def main():
 
     if retry_counter == 0:
         Logging.log(SYS_SNMPEXT_RETRIES_EXHAUSTED, "too many retrys, exiting")
-        sys.exit(1)
+        return 1
     
-    sys.exit(0)
+    return 0
+
+def main_mock():
+    os.environ["SNMPEXT_MOCK_MODE"] = "1"
+    main()
+
+def main():
+
+    args = _parse_args()
+
+    if args.mock:
+        os.environ["SNMPEXT_MOCK_MODE"] = "1"
+
+    code = run(args.extensions)
+
+    sys.exit(code)
+    
 
 if __name__ == "__main__":
     main()
