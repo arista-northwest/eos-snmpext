@@ -65,7 +65,7 @@ def update(pp):
 
     base_oid = "%s.1.1" % ROOT_OID
 
-    for name, elem in data["connections"].items():
+    for _, elem in data["connections"].items():
         idx = ".".join([elem["saddr"], elem["daddr"]])
         pp.add_str("%s.1.%s" % (base_oid, idx), elem["connName"])
         pp.add_str("%s.2.%s" % (base_oid, idx), elem["upTimeStr"])
