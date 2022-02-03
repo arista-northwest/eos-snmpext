@@ -10,5 +10,6 @@ def update(pp):
     s = "Hello World!"
     if is_mock_mode():
         s = "Mocked Hello World?"
-
+        
+    
     pp.add_str("%d.0" % ROOT_OID, s)

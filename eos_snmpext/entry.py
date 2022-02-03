@@ -15,12 +15,13 @@ import pkgutil
 import sys
 import time
 
-
 try:
     import Logging
     import Tac
 except ImportError:
     from eos_snmpext.mock import Logging, Tac
+    os.environ["SNMPEXT_MOCK_MODE"] = "1"
+
 
 import eos_snmpext.extensions
 from eos_snmpext.contrib import snmp_passpersist
@@ -89,7 +90,7 @@ LAST_INTERVAL = {}
 for path in PATHS:
     path = os.path.abspath(os.path.expanduser(path))
 
-    if not os.path.exists(path):
+    if not os.path.exists(os.path.join(path, "extensions")):
         continue
 
     if path not in sys.path:

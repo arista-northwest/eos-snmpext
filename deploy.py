@@ -29,7 +29,7 @@ script = """copy file:/tmp/{0} extension:
 extension {0}
 copy installed-extensions boot-extensions
 configure
-snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 file:/var/tmp/snmpext
+snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 flash:snmpext/bin/snmpext
 end
 delete file:/tmp/{0}
 write

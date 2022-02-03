@@ -6,10 +6,8 @@
 import functools
 import hashlib
 import json
-import re
 import os
 import subprocess
-import sys
 
 from six import iteritems
 
@@ -76,5 +74,4 @@ def version():
     return json.loads(response)
 
 def is_mock_mode():
-    m = os.environ.get("SNMPEXT_MOCK_MODE", None)
     return True if os.environ.get("SNMPEXT_MOCK_MODE", None) else False

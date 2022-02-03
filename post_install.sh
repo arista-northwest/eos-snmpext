@@ -1,8 +1,8 @@
 #!/bin/sh
 
-DIR=/var/tmp
+DIR=/mnt/flash/snmpext
+#mkdir -p $DIR/{bin,extensions}
+mkdir -p $DIR/bin
+#touch $DIR/extentions/__init__.py
+ln -sf /usr/bin/snmpext $DIR/bin/snmpext
 
-if [ -d "$DIR" ]; then
-    ln -sf /usr/bin/snmpext $DIR/snmpext
-    ln -sf /usr/bin/snmpext_mock $DIR/snmpext_mock
-fi

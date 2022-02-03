@@ -153,4 +153,3 @@ def update(pp):
         pp.add_cnt_64bit("%s.3.%s" % (base_oid, copp_class_id), counters["enqueuedBytes"])
         pp.add_cnt_64bit("%s.4.%s" % (base_oid, copp_class_id), counters["droppedPackets"])
         pp.add_cnt_64bit("%s.5.%s" % (base_oid, copp_class_id), counters["droppedBytes"])
-

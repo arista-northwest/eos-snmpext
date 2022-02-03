@@ -1,9 +1,11 @@
 #!/bin/sh
 
-DIR=/var/tmp
-if [ -L "$DIR/snmpext" ]; then
-    rm $DIR/snmpext
+DIR=/mnt/flash/snmpext
 
-if [ -L "$DIR/snmpext_mock" ]; then
-    rm $DIR/snmpext_mock
+if [ -d $DIR ]; then
+    if [ -d $DIR/bin ]; then
+        rm -f $DIR/bin/*
+        rmdir $DIR/bin
+    fi
+    rmddir $DIR
 fi
