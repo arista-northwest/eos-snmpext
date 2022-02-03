@@ -36,7 +36,7 @@ copy installed-extensions boot-extensions
 ! restart the extension
 configure
 no snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5
-snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 file:/mnt/flash/bin/snmpext
+snmp-server extension .1.3.6.1.4.1.8072.1.3.1.5 flash:/snmpext/bin/snmpext
 end
 ```
 
