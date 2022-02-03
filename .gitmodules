@@ -1,0 +1,3 @@
+[submodule "snmp_passpersist"]
+	path = snmp_passpersist
+	url = https://github.com/nagius/snmp_passpersist.git
