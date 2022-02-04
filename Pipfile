@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-eos_snmpext = {path = ".", editable = true, extras = ["tests"]}
+snmpext = {path = ".", editable = true, extras = ["tests"]}
 autopep8="*"
 coverage="*"
 pytest="*"

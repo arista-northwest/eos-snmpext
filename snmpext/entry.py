@@ -19,12 +19,12 @@ try:
     import Logging
     import Tac
 except ImportError:
-    from eos_snmpext.mock import Logging, Tac
+    from snmpext.mock import Logging, Tac
     os.environ["SNMPEXT_MOCK_MODE"] = "1"
 
 
-import eos_snmpext.extensions
-from eos_snmpext.contrib import snmp_passpersist
+import snmpext.extensions
+import snmp_passpersist as snmp
 
 # ====================
 BASE_POLLING_INTERVAL = 1
@@ -84,7 +84,7 @@ Logging.logD(id="SYS_SNMPEXT_RETRIES_EXHAUSTED",
              explanation="[ ]",
              recommendedAction=Logging.NO_ACTION_REQUIRED)
 
-PACKAGES = [eos_snmpext.extensions]
+PACKAGES = [snmpext.extensions]
 LAST_INTERVAL = {}
 
 for path in PATHS:
@@ -182,7 +182,7 @@ def run(extensions):
     while retry_counter > 0:
         message = ""
         try:
-            pp = snmp_passpersist.PassPersist(BASE_OID)
+            pp = snmp.PassPersist(BASE_OID)
             func = functools.partial(update, pp, extensions)
             pp.start(func, BASE_POLLING_INTERVAL)
         except KeyboardInterrupt:

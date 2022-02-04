@@ -5,21 +5,21 @@
 
 # import sys
 import os
-from setuptools import setup,find_packages
+from setuptools import setup, find_packages
 
 # if sys.version_info < (2, 7, 0):
 #     raise NotImplementedError("Sorry, you need at least Python 2.6 to install.")
 #
 # sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
-from eos_snmpext import __version__
+from snmpext import __version__
 
 # Utility function to read the README file.
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = "eos_snmpext",
+    name = "snmpext",
     version = __version__,
     author = "Jesse Mather",
     author_email = "jmather@arista.com",
@@ -34,11 +34,12 @@ setup(
         "Environment :: Functional Testing Automation"
     ],
     packages = find_packages(),
+    #package_data={"": ["snmp_passpersist/snmp_passpersist.py"]},
     url = "http://aristanetworks.com",
     license = "Proprietary",
     entry_points = {
         'console_scripts': [
-            'snmpext = eos_snmpext.entry:main'
+            'snmpext = snmpext.entry:main'
         ]
     },
     options = {

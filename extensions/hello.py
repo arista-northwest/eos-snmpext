@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
-from eos_snmpext.util import is_mock_mode
+from snmpext.util import is_mock_mode
 
 ROOT_OID = 255
 POLLING_INTERVAL = 86400 * 365
