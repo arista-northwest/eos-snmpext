@@ -24,7 +24,7 @@ except ImportError:
 
 
 import snmpext.extensions
-import snmp_passpersist as snmp
+from snmpext import snmp_passpersist as snmp
 
 # ====================
 BASE_POLLING_INTERVAL = 1
@@ -96,12 +96,6 @@ for path in PATHS:
     if path not in sys.path:
         sys.path.insert(1, path)
 
-try:
-    import snmpext
-    PACKAGES.insert(0, snmpext)
-except ImportError:
-    pass
-
 # See: https://mail.python.org/pipermail/tutor/2003-November/026645.html
 class Unbuffered(object):
    def __init__(self, stream):
@@ -118,7 +112,7 @@ sys.stderr = Unbuffered(sys.stderr)
 def _load_extensions(names):
     modules = []
     for package in PACKAGES:
-        for importer, name, ispkg in pkgutil.iter_modules(package.__path__, ''):
+        for importer, name, _ in pkgutil.iter_modules(package.__path__, ''):
 
             if names and name not in names:
                 # skip if name does not match 'names' passed by user
@@ -164,6 +158,7 @@ def update(pp, extensions):
 
         if now - last_interval >= polling_interval:
             Logging.log(SYS_SNMPEXT_UPDATING, "Polling timer expired, updating %s" % ext.__name__)
+            
             ext.update(pp)
             ext._LAST_INTERVAL = now
 
