@@ -35,6 +35,7 @@
 from __future__ import print_function
 
 import json
+from snmpext.entry import POLLING_INTERVAL
 from snmpext.util import is_mock_mode, cli
 
 MOCK_DATA = """{
@@ -58,7 +59,6 @@ MOCK_DATA = """{
     }
 }"""
 
-ROOT_OID = 6
 POLLING_INTERVAL = 10
 
 def update(pp):
@@ -68,7 +68,7 @@ def update(pp):
     else:
         data = json.loads(cli("show ip security connection | json"))
 
-    base_oid = "%s.1.1" % ROOT_OID
+    base_oid = "1.1"
     
     for _, elem in data["connections"].items():
         idx = ".".join([elem["saddr"], elem["daddr"]])

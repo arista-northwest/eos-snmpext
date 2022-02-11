@@ -3,6 +3,8 @@
 # Copyright (c) 2016 Arista Networks, Inc.  All rights reserved.
 # Arista Networks, Inc. Confidential and Proprietary.
 
+from __future__ import print_function
+
 # import sys
 import os
 from setuptools import setup, find_packages
@@ -17,6 +19,14 @@ from snmpext import __version__
 # Utility function to read the README file.
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
+from os.path import dirname, basename, isfile, join
+import glob
+
+def gen_entrypoints(dir="snmpext/extensions"):
+    modules = glob.glob(join(dirname(__file__), dir, "*.py"))
+    for m in [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]:
+        yield "snmpext-%s = snmpext.entry:main" % m
 
 setup(
     name = "snmpext",
@@ -34,13 +44,11 @@ setup(
         "Environment :: Functional Testing Automation"
     ],
     packages = find_packages(),
-    #package_data={"": ["snmp_passpersist/snmp_passpersist.py"]},
+
     url = "http://aristanetworks.com",
     license = "Proprietary",
     entry_points = {
-        'console_scripts': [
-            'snmpext = snmpext.entry:main'
-        ]
+        'console_scripts': [s for s in gen_entrypoints()]
     },
     options = {
         'bdist_rpm': {

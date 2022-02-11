@@ -3,17 +3,15 @@
 # Copyright (c) 2016 Arista Networks, Inc.  All rights reserved.
 # Arista Networks, Inc. Confidential and Proprietary.
 
-from __future__ import absolute_import
-from __future__ import division
-#from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import argparse
 import errno
 import functools
 import os
-import pkgutil
 import sys
-import time
+
+from attr import has
 
 try:
     import Logging
@@ -22,17 +20,14 @@ except ImportError:
     from snmpext.mock import Logging, Tac
     os.environ["SNMPEXT_MOCK_MODE"] = "1"
 
-
-import snmpext.extensions
 from snmpext import snmp_passpersist as snmp
 
 # ====================
-BASE_POLLING_INTERVAL = 1
+POLLING_INTERVAL = 30
 MAX_RETRY = 10
 NET_SNMP_EXTEND_OID = ".1.3.6.1.4.1.8072.1.3.1"
-BASE_OID = NET_SNMP_EXTEND_OID + ".5"
 # search these paths for the 'snmpext' directory
-PATHS = ['/mnt/flash', '/persist/local']
+# PATHS = ['/mnt/flash', '/persist/local']
 # ====================
 
 Tac.singleton("Tac::LogManager").syslogFacility = 'logLocal4'
@@ -84,52 +79,38 @@ Logging.logD(id="SYS_SNMPEXT_RETRIES_EXHAUSTED",
              explanation="[ ]",
              recommendedAction=Logging.NO_ACTION_REQUIRED)
 
-PACKAGES = [snmpext.extensions]
-LAST_INTERVAL = {}
-
-for path in PATHS:
-    path = os.path.abspath(os.path.expanduser(path))
-
-    if not os.path.exists(os.path.join(path, "extensions")):
-        continue
-
-    if path not in sys.path:
-        sys.path.insert(1, path)
-
 # See: https://mail.python.org/pipermail/tutor/2003-November/026645.html
+
+
 class Unbuffered(object):
-   def __init__(self, stream):
-       self.stream = stream
-   def write(self, data):
-       self.stream.write(data)
-       self.stream.flush()
-   def __getattr__(self, attr):
-       return getattr(self.stream, attr)
+    def __init__(self, stream):
+        self.stream = stream
+
+    def write(self, data):
+        self.stream.write(data)
+        self.stream.flush()
+
+    def __getattr__(self, attr):
+        return getattr(self.stream, attr)
+
 
 sys.stdout = Unbuffered(sys.stdout)
 sys.stderr = Unbuffered(sys.stderr)
 
-def _load_extensions(names):
-    modules = []
-    for package in PACKAGES:
-        for importer, name, _ in pkgutil.iter_modules(package.__path__, ''):
 
-            if names and name not in names:
-                # skip if name does not match 'names' passed by user
-                continue
+def _load_extension(name):
+    extension = None
 
-            full_name = ".".join([package.__name__, name])
-            module = importer.find_module(name).load_module(full_name)
+    try:
+        extension = getattr(__import__(
+            "snmpext.extensions", fromlist=[name]), name)
+    except AttributeError:
+        raise ValueError("Failed to load extension '%s'" % name)
 
-            if not hasattr(module, 'update'):
-                continue
+    Logging.log(SYS_SNMPEXT_EXTENSION_LOADED, "Loaded extension: %s" % name)
 
-            if not is_supported(module):
-                continue
+    return extension
 
-            Logging.log(SYS_SNMPEXT_EXTENSION_LOADED, "Loaded extension: %s" % name)
-            modules.append(module)
-    return modules
 
 def is_supported(extension):
 
@@ -140,48 +121,28 @@ def is_supported(extension):
         Logging.log(SYS_SNMPEXT_EXTENSION_NOTSUPPORTED,
                     "extension '%s' is not supported" % extension.__name__)
         return False
-    
+
     return True
 
-def update(pp, extensions):
-    polling_interval = 0
-    last_interval = 0
 
-    for ext in extensions:
-        now = time.time()
-
-        if hasattr(ext, 'POLLING_INTERVAL'):
-            polling_interval = ext.POLLING_INTERVAL
-
-        if hasattr(ext, '_LAST_INTERVAL'):
-            last_interval = ext._LAST_INTERVAL
-
-        if now - last_interval >= polling_interval:
-            Logging.log(SYS_SNMPEXT_UPDATING, "Polling timer expired, updating %s" % ext.__name__)
-            
-            ext.update(pp)
-            ext._LAST_INTERVAL = now
-
-def _parse_args():
-    parser = argparse.ArgumentParser(prog="snmpext")
-    arg = parser.add_argument
-
-    arg("extensions", nargs="*", default=[])
-    arg("-m", "--mock", action="store_true", help="enable mock mode. uses fake data")
-    return parser.parse_args()
-
-def run(extensions):
-    extensions = _load_extensions(extensions)
+def run(extension):
+    
+    # extension.BASE_OID
     retry_counter = MAX_RETRY
+    polling_interval = POLLING_INTERVAL
+    base_oid = NET_SNMP_EXTEND_OID
+
+    extension = _load_extension(extension)
+
+    if hasattr(extension, "POLLING_INTERVAL") and extension.POLLING_INTERVAL > 0:
+        polling_interval = extension.POLLING_INTERVAL
 
     while retry_counter > 0:
         message = ""
         try:
-            pp = snmp.PassPersist(BASE_OID)
-            func = functools.partial(update, pp, extensions)
-            pp.start(func, BASE_POLLING_INTERVAL)
+            pp = snmp.PassPersist(base_oid)
+            pp.start(functools.partial(extension.update, pp), polling_interval)
         except KeyboardInterrupt:
-
             Logging.log(SYS_SNMPEXT_SHUTDOWN, "Exiting on user request")
             return 0
         except IOError as exc:
@@ -189,35 +150,27 @@ def run(extensions):
                 message = "snmpd has closed the pipe"
                 Logging.log(SYS_SNMPEXT_PIPE_CLOSED, message)
                 return 0
-        except EOFError as exc:
-            Logging.log(SYS_SNMPEXT_SHUTDOWN, "EOF. shutting down...")
-            return 0
-
-        Logging.log(SYS_SNMPEXT_RETRYING, message)
+        else:
+            Logging.log(SYS_SNMPEXT_SHUTDOWN,
+                        "Pass-persist has shut down, restarting")
 
         retry_counter -= 1
 
     if retry_counter == 0:
         Logging.log(SYS_SNMPEXT_RETRIES_EXHAUSTED, "too many retrys, exiting")
         return 1
-    
+
     return 0
 
-def main_mock():
-    os.environ["SNMPEXT_MOCK_MODE"] = "1"
-    main()
 
 def main():
+    import sys
+    script_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
+    _, extension = script_name.split("-", 1)
 
-    args = _parse_args()
+    ret_code = run(extension)
 
-    if args.mock:
-        os.environ["SNMPEXT_MOCK_MODE"] = "1"
-
-    code = run(args.extensions)
-
-    sys.exit(code)
-    
+    sys.exit(ret_code)
 
 if __name__ == "__main__":
     main()

@@ -6,7 +6,7 @@ from binascii import hexlify
 import re
 import socket
 #import re
-from eos_snmpext.util import cli, platform
+from snmpext.util import cli, platform
 
 '''
 {

@@ -7,7 +7,7 @@ import json
 import re
 import os
 from six import iteritems
-from eos_snmpext.util import cli, is_platform_sand, is_mock_mode
+from snmpext.util import cli, is_platform_sand, is_mock_mode
 
 """
 +--- cpuCountersQueue (11)

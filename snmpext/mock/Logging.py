@@ -19,7 +19,7 @@ CONTACT_SUPPORT = "This is a serious error..."
 
 def logD( id, *args, **kwargs):
     # fakew how the real Logging modules ability to force the 'id' into scope
-    sys._getframe(1).f_globals[id] = None
+    sys._getframe(1).f_globals[id] = id
 
 def log(handle, *args, **kwargs):
-    pass
+    print("%s: %s" % (handle, str(args[0])))
