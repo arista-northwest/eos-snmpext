@@ -66,7 +66,7 @@ field_map = {
     "droppedPackets": 7
 }
 
-ROOT_OID = 10
+BASE_OID = ".1.3.6.1.4.1.8072.1.3.1.5.10"
 POLLING_INTERVAL = 30
 
 def supported():
@@ -96,7 +96,7 @@ def update(pp):
                 dqueue_id = queue_map[dqueue]
                 #field_id = field_map
 
-                oid = "%d.1.1.%d.%s.%s" % (ROOT_OID, module_id, port_id, dqueue_id)
+                oid = "1.1.%d.%s.%s" % (module_id, port_id, dqueue_id)
 
                 #print("%s %s %s %d.%s.%s" % (fabric, port, dqueue, module_id, port_id, dqueue_id))
                 

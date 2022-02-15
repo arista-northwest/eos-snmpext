@@ -4,7 +4,7 @@
 # Arista Networks, Inc. Confidential and Proprietary.
 
 import json
-from eos_snmpext.util import cli, platform
+from snmpext.util import cli, platform
 
 """
 +--- SandL3Stats(2)

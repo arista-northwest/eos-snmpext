@@ -28,7 +28,7 @@ import time
 """
 
 POLLING_INTERVAL = 10
-ROOT_OID = 12
+BASE_OID = ".1.3.6.1.4.1.8072.1.3.1.5.12"
 
 def get_rib_statm(name=None):
     stats = []
@@ -68,7 +68,8 @@ def get_rib_statm(name=None):
 def update(pp=None):
     stats = get_rib_statm()
     
-    base_oid = "%s.1.1" % ROOT_OID
+    base_oid = "1.1"
+
     for entry in stats:
         idx = abs(hash(entry["name"])) % (10 ** 8)
         pp.add_str("%s.1.%s" % (base_oid, idx), entry["name"])

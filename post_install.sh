@@ -2,5 +2,4 @@
 
 DIR=/mnt/flash/snmpext
 mkdir -p $DIR/bin
-cp -pf /usr/bin/snmpext $DIR/bin/snmpext
-
+cp -pf /usr/bin/snmpext-* $DIR/bin/

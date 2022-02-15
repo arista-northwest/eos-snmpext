@@ -11,8 +11,6 @@ import functools
 import os
 import sys
 
-from attr import has
-
 try:
     import Logging
     import Tac
@@ -26,8 +24,6 @@ from snmpext import snmp_passpersist as snmp
 POLLING_INTERVAL = 30
 MAX_RETRY = 10
 NET_SNMP_EXTEND_OID = ".1.3.6.1.4.1.8072.1.3.1"
-# search these paths for the 'snmpext' directory
-# PATHS = ['/mnt/flash', '/persist/local']
 # ====================
 
 Tac.singleton("Tac::LogManager").syslogFacility = 'logLocal4'
@@ -125,20 +121,9 @@ def is_supported(extension):
     return True
 
 
-def run(extension):
-    
-    # extension.BASE_OID
-    retry_counter = MAX_RETRY
-    polling_interval = POLLING_INTERVAL
-    base_oid = NET_SNMP_EXTEND_OID
+def run(extension, base_oid, polling_interval):
 
-    extension = _load_extension(extension)
-
-    if hasattr(extension, "POLLING_INTERVAL") and extension.POLLING_INTERVAL > 0:
-        polling_interval = extension.POLLING_INTERVAL
-
-    while retry_counter > 0:
-        message = ""
+    while MAX_RETRY > 0:
         try:
             pp = snmp.PassPersist(base_oid)
             pp.start(functools.partial(extension.update, pp), polling_interval)
@@ -147,8 +132,7 @@ def run(extension):
             return 0
         except IOError as exc:
             if exc.errno == errno.EPIPE:
-                message = "snmpd has closed the pipe"
-                Logging.log(SYS_SNMPEXT_PIPE_CLOSED, message)
+                Logging.log(SYS_SNMPEXT_PIPE_CLOSED, "snmpd has closed the pipe")
                 return 0
         else:
             Logging.log(SYS_SNMPEXT_SHUTDOWN,
@@ -162,15 +146,34 @@ def run(extension):
 
     return 0
 
+def prog_name():
+    return os.path.splitext(os.path.basename(sys.argv[0]))[0]
+
+def config():
+    name = prog_name()
+    _, extension = name.split("-", 1)
+    extension = _load_extension(extension)
+    # extension.BASE_OID
+    polling_interval = POLLING_INTERVAL
+    base_oid = NET_SNMP_EXTEND_OID
+
+    if hasattr(extension, "POLLING_INTERVAL") and extension.POLLING_INTERVAL > 0:
+        polling_interval = extension.POLLING_INTERVAL
+
+    if hasattr(extension, "BASE_OID"):
+        base_oid = extension.BASE_OID
+
+    config = {
+        "extension": extension,
+        "interval": polling_interval,
+        "base_oid": base_oid
+    }
 
 def main():
-    import sys
-    script_name = os.path.splitext(os.path.basename(sys.argv[0]))[0]
-    _, extension = script_name.split("-", 1)
 
-    ret_code = run(extension)
+    status = run(extension, base_oid, polling_interval)
 
-    sys.exit(ret_code)
+    sys.exit(status)
 
 if __name__ == "__main__":
     main()

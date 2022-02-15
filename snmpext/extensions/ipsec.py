@@ -60,6 +60,7 @@ MOCK_DATA = """{
 }"""
 
 POLLING_INTERVAL = 10
+BASE_OID = ".1.3.6.1.4.1.8072.1.3.1.5.6"
 
 def update(pp):
     data = None

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 import re
-from eos_snmpext.util import cli, platform
+from snmpext.util import cli, platform
 
 """
 
@@ -27,7 +27,7 @@ Map of platform_l3_stats MIB :
 """
 
 POLLING_INTERVAL = 60
-ROOT_OID = 1
+BASE_OID = ".1.3.6.1.4.1.8072.1.3.1.5.1"
 
 def supported():
     return platform() == 'trident2'
@@ -81,21 +81,21 @@ def update(pp):
     stats = {key: int(val) for key, val in data.items()}
 
     # nextHopEntriesUsed
-    pp.add_gau("%d.1" % ROOT_OID, stats["next_hop_entries_used"])
+    pp.add_gau("1", stats["next_hop_entries_used"])
     # nextHopEntriesSize
-    pp.add_gau("%d.2" % ROOT_OID, stats["next_hop_entries_size"])
+    pp.add_gau("1.2", stats["next_hop_entries_size"])
     # hostTableMode
-    pp.add_gau("%d.3" % ROOT_OID, stats["host_table_mode"])
+    pp.add_gau("1.3", stats["host_table_mode"])
     # hostTableUsed
-    pp.add_gau("%d.4" % ROOT_OID, stats["host_table_used"])
+    pp.add_gau("1.4", stats["host_table_used"])
     # hostTableSize
-    pp.add_gau("%d.5" % ROOT_OID, stats["host_table_size"])
+    pp.add_gau("1.5", stats["host_table_size"])
     # lpmTableMode
-    pp.add_gau("%d.6" % ROOT_OID, stats["lpm_table_mode"])
+    pp.add_gau("1.6", stats["lpm_table_mode"])
     # lpmTableUsed
-    pp.add_gau("%d.7" % ROOT_OID, stats["lpm_table_used"])
+    pp.add_gau("1.7", stats["lpm_table_used"])
     # lpmTableSize
-    pp.add_gau("%d.8" % ROOT_OID, stats["lpm_table_size"])
+    pp.add_gau("1.8", stats["lpm_table_size"])
     # ipv4Entries
     pp.add_gau("1.9", stats["ipv4_entries"])
     # ipv4Routes

@@ -5,8 +5,7 @@ import json
 from binascii import hexlify
 import re
 import socket
-#import re
-from snmpext.util import cli, platform
+from snmpext.util import cli
 
 '''
 {
@@ -73,7 +72,7 @@ from snmpext.util import cli, platform
 '''
 
 POLLING_INTERVAL = 60
-ROOT_OID = 3
+BASE_OID = ".1.3.6.1.4.1.8072.1.3.1.5.3"
 
 def ipv6_octet_string(addr):
     hexaddr = hexlify(socket.inet_pton(socket.AF_INET6, addr))
@@ -100,8 +99,8 @@ def update(pp):
             #print(">>" + str(response) + "<<")
             resp_ = json.loads(response)
             ifindex = resp_["ifIndex"][interface]
-            pp.add_str("%d.%s.1" % (ROOT_OID, index), prefix) # ipv6RouteDest (string)
-            pp.add_int("%d.%s.2" % (ROOT_OID, index), int(plen)) # ipv6RoutePfxLength (int)
-            pp.add_int("%d.%s.3" % (ROOT_OID, index), i) # ipv6RouteIndex (int)
-            pp.add_int("%d.%s.4" % (ROOT_OID, index), ifindex) # ipv6RouteIfIndex (int)
-            pp.add_str("%d.%s.5" % (ROOT_OID, index), nexthop) # ipv6RouteNextHop
+            pp.add_str("%s.1" % index, prefix) # ipv6RouteDest (string)
+            pp.add_int("%s.2" % index, int(plen)) # ipv6RoutePfxLength (int)
+            pp.add_int("%s.3" % index, i) # ipv6RouteIndex (int)
+            pp.add_int("%s.4" % index, ifindex) # ipv6RouteIfIndex (int)
+            pp.add_str("%s.5" % index, nexthop) # ipv6RouteNextHop
