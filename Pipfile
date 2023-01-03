@@ -10,6 +10,3 @@ coverage="*"
 pytest="*"
 
 [packages]
-
-[requires]
-python_version = "2.7"

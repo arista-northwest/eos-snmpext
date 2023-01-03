@@ -9,8 +9,6 @@ import json
 import os
 import subprocess
 
-from six import iteritems
-
 def md5sum(*args):
     hash = hashlib.md5()
     for arg in args:
@@ -64,7 +62,7 @@ def platform():
         'arad': is_platform_arad
     }
 
-    for name, func in iteritems(platforms):
+    for name, func in platforms:
         if func():
             return name
 

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
 # snmp_passpersist.py - SNMP passPersist backend for Net-SNMP
-# Copyleft 2010-2019 - Nicolas AGIUS <nicolas.agius@lps-it.fr>
+# Copyleft 2010-2022 - Nicolas AGIUS <nicolas.agius@lps-it.fr>
 
 ###########################################################################
 #
@@ -28,24 +28,16 @@ STDOUT by use of the -u switch in the shebang line.
 
 All the methods are in the PassPersist class.
 """
-from __future__ import print_function
-
-try:
-    from builtins import str
-    from builtins import object
-except ImportError:
-    pass
-
 import sys
 import time
 import threading
 import os
 
-__all__ = ["Error", "ErrorValues", "Type", "TypeValues", "PassPersist"]
+__all__ = [ "Error", "ErrorValues", "Type", "TypeValues", "PassPersist" ]
 
 __author__ = "Nicolas Agius"
 __license__ = "GPL"
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 __email__ = "nicolas.agius@lps-it.fr"
 __status__ = "Production"
 
@@ -89,7 +81,6 @@ class ResponseError(ValueError):
     Wrong user function 
     """
 
-
 class PassPersist(object):
     """
     This class present a convenient way to creare a MIB subtree and expose it to snmp via it's passpersist protocol.
@@ -105,7 +96,7 @@ class PassPersist(object):
     > def update():
     >     pp.add_int('0.1',123)
     >
-    > pp=snmp.PassPersist(".1.3.6.1.3.53.8")
+    > pp = snmp.PassPersist(".1.3.6.1.3.53.8")
     > pp.start(update,30) # Every 30s
 
     With the folowing line in snmpd.conf :
@@ -163,7 +154,7 @@ class PassPersist(object):
 
     def get_next(self, oid):
         """Return snmp value for the next OID."""
-        try:  # Nested try..except because of Python 2.4
+        try: # Nested try..except because of Python 2.4
             self.lock.acquire()
             try:
                 # remove trailing zeroes from the oid
@@ -175,15 +166,15 @@ class PassPersist(object):
                 for real_oid in self.data_idx:
                     if real_oid.startswith(oid):
                         return self.get(real_oid)
-                return "NONE"  # Unknown OID
+                return "NONE" # Unknown OID
             except IndexError:
-                return "NONE"  # End of MIB
+                return "NONE" # End of MIB
         finally:
             self.lock.release()
 
     def get_first(self):
         """Return snmp value for the first OID."""
-        try:  # Nested try..except because of Python 2.4
+        try: # Nested try..except because of Python 2.4
             self.lock.acquire()
             try:
                 return self.get(self.data_idx[0])
@@ -197,7 +188,7 @@ class PassPersist(object):
         Remove the base OID from the given string.
 
         >>> import snmp_passpersist as snmp
-        >>> pp=snmp.PassPersist(".1.3.6.1.3.53.8")
+        >>> pp = snmp.PassPersist(".1.3.6.1.3.53.8")
         >>> pp.cut_oid(".1.3.6.1.3.53.8.28.12")
         '28.12'
         """
@@ -238,14 +229,12 @@ class PassPersist(object):
     def add_cnt_32bit(self, oid, value, label=None):
         """Short helper to add a 32 bit counter value to the MIB subtree."""
         # Truncate integer to 32bits ma,x
-        self.add_oid_entry(oid, 'Counter32', int(value) %
-                           4294967296, label=label)
+        self.add_oid_entry(oid, 'Counter32', int(value) % 4294967296, label=label)
 
     def add_cnt_64bit(self, oid, value, label=None):
         """Short helper to add a 64 bit counter value to the MIB subtree."""
         # Truncate integer to 64bits ma,x
-        self.add_oid_entry(oid, 'Counter64', int(value) %
-                           18446744073709551615, label=label)
+        self.add_oid_entry(oid, 'Counter64', int(value) % 18446744073709551615, label=label)
 
     def add_gau(self, oid, value, label=None):
         """Short helper to add a gauge value to the MIB subtree."""
@@ -287,7 +276,7 @@ class PassPersist(object):
             oid = sys.stdin.readline().strip()
             typevalue = sys.stdin.readline().strip()
             self.set(oid, typevalue)
-        elif 'DUMP' in line:  # Just for debbuging
+        elif 'DUMP' in line: # Just for debbuging
             from pprint import pprint
             pprint(self.data)
         else:
@@ -304,8 +293,7 @@ class PassPersist(object):
 
         # Generate index before acquiring lock to keep locked section fast
         # Works because this thread is the only writer of self.pending
-        pending_idx = sorted(list(self.pending.keys()), key=lambda k: tuple(
-            int(part) for part in k.split('.')))
+        pending_idx = sorted(list(self.pending.keys()), key=lambda k: tuple(int(part) for part in k.split('.')))
 
         # Commit new data
         try:
@@ -325,7 +313,7 @@ class PassPersist(object):
         try:
             os.nice(1)
         except AttributeError as er:
-            pass  # os.nice is not available on windows
+            pass # os.nice is not available on windows
         time.sleep(self.refresh)
 
         try:
@@ -360,12 +348,11 @@ class PassPersist(object):
         """
         if hasattr(self.setter, oid):
             return self.setter[oid]
-        parents = [poid for poid in list(
-            self.setter.keys()) if oid.startswith(poid)]
+        parents = [poid for poid in list(self.setter.keys()) if oid.startswith(poid)]
         if parents:
             return self.setter[max(parents)]
         return self.default_setter
-
+    
     def register_setter(self, oid, setter_func):
         """
         Set reference to an user defined function for deal with set commands.
@@ -416,7 +403,7 @@ class PassPersist(object):
         up.start()
 
         # Main loop
-        while up.isAlive():  # Do not serve data if the Updater thread has died
+        while up.is_alive(): # Do not serve data if the Updater thread has died
             try:
                 self.main_passpersist()
             except EOFError:
@@ -424,8 +411,8 @@ class PassPersist(object):
             except:
                 try:
                     up._Thread__stop()
-                except AttributeError:  # python3 has no Thread._Thread__stop
+                except AttributeError: # python3 has not Thread._Thread__stop
                     pass
                 raise
 
-# vim: ts=4:sw=4:ai
+# vim: ts = 4:sw = 4:ai

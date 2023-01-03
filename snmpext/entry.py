@@ -163,15 +163,15 @@ def config():
     if hasattr(extension, "BASE_OID"):
         base_oid = extension.BASE_OID
 
-    config = {
+    return {
         "extension": extension,
-        "interval": polling_interval,
+        "polling_interval": polling_interval,
         "base_oid": base_oid
     }
 
 def main():
 
-    status = run(extension, base_oid, polling_interval)
+    status = run(**config())
 
     sys.exit(status)
 

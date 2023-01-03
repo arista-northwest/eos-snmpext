@@ -3,8 +3,6 @@
 # Copyright (c) 2016 Arista Networks, Inc.  All rights reserved.
 # Arista Networks, Inc. Confidential and Proprietary.
 
-from __future__ import print_function
-
 # import sys
 import os
 from setuptools import setup, find_packages
@@ -43,7 +41,7 @@ setup(
         "Programming Language :: Python :: 2.7",
         "Environment :: Functional Testing Automation"
     ],
-    packages = find_packages(),
+    packages = find_packages(exclude=['_clab']),
 
     url = "http://aristanetworks.com",
     license = "Proprietary",
