@@ -21,10 +21,10 @@ def read(fname):
 from os.path import dirname, basename, isfile, join
 import glob
 
-def gen_entrypoints(dir="snmpext/extensions"):
-    modules = glob.glob(join(dirname(__file__), dir, "*.py"))
-    for m in [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]:
-        yield "snmpext-%s = snmpext.entry:main" % m
+# def gen_entrypoints(dir="snmpext/extensions"):
+#     modules = glob.glob(join(dirname(__file__), dir, "*.py"))
+#     for m in [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]:
+#         yield "snmpext-%s = snmpext.entry:main" % m
 
 setup(
     name = "snmpext",
@@ -45,9 +45,9 @@ setup(
 
     url = "http://aristanetworks.com",
     license = "Proprietary",
-    entry_points = {
-        'console_scripts': [s for s in gen_entrypoints()]
-    },
+    # entry_points = {
+    #     'console_scripts': [s for s in gen_entrypoints()]
+    # },
     options = {
         'bdist_rpm': {
             'post_install' : 'post_install.sh',

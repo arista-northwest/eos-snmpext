@@ -148,7 +148,7 @@ class PassPersist(object):
             if oid not in self.data:
                 return "NONE"
             else:
-                return self.base_oid + oid + '\n' + self.data[oid]['type'] + '\n' + str(self.data[oid]['value'])
+                return oid + '\n' + self.data[oid]['type'] + '\n' + str(self.data[oid]['value'])
         finally:
             self.lock.release()
 
@@ -267,7 +267,7 @@ class PassPersist(object):
             else:
                 print(self.get_next(oid))
         elif 'get' in line:
-            oid = self.cut_oid(sys.stdin.readline().strip())
+            oid = sys.stdin.readline().strip()
             if oid is None:
                 print("NONE")
             else:
@@ -293,7 +293,8 @@ class PassPersist(object):
 
         # Generate index before acquiring lock to keep locked section fast
         # Works because this thread is the only writer of self.pending
-        pending_idx = sorted(list(self.pending.keys()), key=lambda k: tuple(int(part) for part in k.split('.')))
+
+        pending_idx = sorted(list(self.pending.keys()), key=lambda k: tuple(int(part) for part in k.lstrip(".").split('.')))
 
         # Commit new data
         try:
